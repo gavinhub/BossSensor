@@ -141,3 +141,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# data
+data/*/*.png
+store/model.h5

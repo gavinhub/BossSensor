@@ -43,7 +43,7 @@ def traverse_dir(path):
         if os.path.isdir(abs_path):  # dir
             traverse_dir(abs_path)
         else:                        # file
-            if file_or_dir.endswith('.jpg'):
+            if file_or_dir.endswith('.png'):
                 image = read_image(abs_path)
                 images.append(image)
                 labels.append(path)
@@ -61,6 +61,6 @@ def read_image(file_path):
 def extract_data(path):
     images, labels = traverse_dir(path)
     images = np.array(images)
-    labels = np.array([0 if label.endswith('boss') else 1 for label in labels])
+    labels = np.array([0 if label.endswith('normal') else 1 for label in labels])
 
     return images, labels

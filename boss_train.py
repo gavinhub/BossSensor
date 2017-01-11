@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import random
+import os
 
 import numpy as np
-from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Activation, Flatten
@@ -72,6 +73,7 @@ class Dataset(object):
 class Model(object):
 
     FILE_PATH = './store/model.h5'
+    FILE_DIR = './store'
 
     def __init__(self):
         self.model = None
@@ -143,12 +145,14 @@ class Model(object):
                                      validation_data=(dataset.X_valid, dataset.Y_valid))
 
     def save(self, file_path=FILE_PATH):
-        print('Model Saved.')
+        if not os.path.exists(self.FILE_DIR):
+            os.mkdir(self.FILE_DIR)
         self.model.save(file_path)
+        print('Model Saved.')
 
     def load(self, file_path=FILE_PATH):
-        print('Model Loaded.')
         self.model = load_model(file_path)
+        print('Model Loaded.')
 
     def predict(self, image):
         if image.shape != (1, 3, IMAGE_SIZE, IMAGE_SIZE):
@@ -156,8 +160,8 @@ class Model(object):
             image = image.reshape((1, 3, IMAGE_SIZE, IMAGE_SIZE))
         image = image.astype('float32')
         image /= 255
-        result = self.model.predict_proba(image)
-        print(result)
+        # result = self.model.predict_proba(image)
+        # print(result)
         result = self.model.predict_classes(image)
 
         return result[0]
@@ -178,3 +182,4 @@ if __name__ == '__main__':
     model = Model()
     model.load()
     model.evaluate(dataset)
+    print("Training completed.")
