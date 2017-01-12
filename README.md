@@ -1,55 +1,46 @@
-# BossSensor
-Hide screen when boss is approaching.
+# KissSensor
+Start a FaceTime session when you blow a kiss!
 
-## Demo
-Boss stands up. He is approaching.
-
-![standup](https://github.com/Hironsan/BossSensor/blob/master/resource_for_readme/standup.jpg)
-
-When he is approaching, fetch face images and classify image.
- 
-![approaching](https://github.com/Hironsan/BossSensor/blob/master/resource_for_readme/approach.jpg)
-
-If image is classified as the Boss, monitor changes.
-
-![editor](https://github.com/Hironsan/BossSensor/blob/master/resource_for_readme/editor.jpg)
-
-## Requirements
-
-* WebCamera
-* Python3.5
-* OSX
-* Anaconda
-* Many boss image and other person image
-
-Put images into [data/boss](https://github.com/Hironsan/BossSensor/tree/master/data/boss) and [data/other](https://github.com/Hironsan/BossSensor/tree/master/data/other).
+Put images into [data/normal]() and [data/kiss]().
 
 ## Usage
-First, Train boss image.
+First, capture the training data. Use `normal` or `kiss` to denote the label
 
 ```
-$ python boss_train.py
+$ python camera_reader.py <label>
 ```
 
 
-Second, start BossSensor. 
+Second, train the model. 
+
+```
+$ python model_train.py
+```
+
+Finally, detect your kiss
 
 ```
 $ python camera_reader.py
 ```
 
 ## Install
-Install OpenCV, PyQt4, Anaconda.
+Install OpenCV, Anaconda.
 
+Build an AppleScript with following code and put it somewhere appropriate (like your desktop)
 ```
-conda create -n venv python=3.5
-source activate venv
-conda install -c https://conda.anaconda.org/menpo opencv3
-conda install -c conda-forge tensorflow
-pip install -r requirements.txt
+set phone_num to "THE_PHONE_NUMBER_TO_CALL"
+set faceTime to "FaceTime"
+if application faceTime is running then
+	return
+end if
+do shell script "open facetime://" & quoted form of phone_num
+tell application "System Events"
+	repeat while not (button "Call" of window 1 of application process faceTime exists)
+		delay 1
+	end repeat
+	click button "Call" of window 1 of application process "FaceTime"
+end tell
 ```
-
-Change Keras backend from Theano to TensorFlow. 
 
 ## Licence
 

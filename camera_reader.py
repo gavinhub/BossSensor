@@ -8,7 +8,7 @@ import datetime
 import cv2
 import numpy as np
 
-from boss_train import Model
+from model_train import Model
 from facetime_call import FaceTimeDriver
 
 DATA_FILE_PATH = './data'
