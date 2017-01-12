@@ -1,9 +1,8 @@
 # KissSensor
 Start a FaceTime session when you blow a kiss!
 
-Put images into [data/normal]() and [data/kiss]().
-
 ## Usage
+
 First, capture the training data. Use `normal` or `kiss` to denote the label. I captured ~1,000 photos (500 for kiss and normal each) 
 and achieved 90% prediction correctness. So you may also need that more.
 
@@ -18,7 +17,7 @@ Second, train the model.
 $ python model_train.py
 ```
 
-Finally, detect your kiss
+Finally, run the script and try holding your gesture for a few seconds. 
 
 ```
 $ python camera_reader.py
@@ -45,8 +44,8 @@ end tell
 
 ## Licence
 
-[MIT](https://github.com/Hironsan/BossSensor/blob/master/LICENSE)
+[MIT](https://github.com/gavinhub/KissSensor/blob/master/LICENSE)
 
 ## Author
 
-[Hironsan](https://github.com/Hironsan)
+[Gavin](https://github.com/gavinhub)
