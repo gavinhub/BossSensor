@@ -6,8 +6,10 @@ import sys
 import datetime
 
 import cv2
+import numpy as np
 
 from boss_train import Model
+from facetime_call import FaceTimeDriver
 
 DATA_FILE_PATH = './data'
 
@@ -21,26 +23,30 @@ def capture(image, label):
     cv2.imwrite(filepath, image)
 
 
-def process(image, model):
+def process(image, model, face_driver):
     result = model.predict(image)
-    if result == 0:  # boss
-        print('nothing')
-    else:
-        print('Kissing!')
+    if face_driver is not None:
+        face_driver.action(result)
+    return result
 
 
 if __name__ == '__main__':
+    driver = None
     # load model
     if len(sys.argv) <= 1:
         model = Model()
         model.load()
+        driver = FaceTimeDriver()
 
     cap = cv2.VideoCapture(0)
     cascade_path = "/usr/local/opt/opencv/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml"
     cascade = cv2.CascadeClassifier(cascade_path)
 
     while cap.isOpened():
-        _, frame = cap.read()
+        ret, frame = cap.read()
+        if not ret: continue
+        frame = frame[:, ::-1, :]
+        frame = frame.copy()
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         face_rect = cascade.detectMultiScale(frame_gray, scaleFactor=1.2, minNeighbors=3, minSize=(10, 10))
         if len(face_rect) > 0:
@@ -52,14 +58,16 @@ if __name__ == '__main__':
                     continue
                 x, y = rect[0:2]
                 cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), color, thickness=2)
-                image = frame[y - 10: y + height, x: x + width]
-
+                image = frame_gray[y - 10: y + height, x: x + width]
+                image = image[:, :, None] * np.array([[[1, 1, 1]]])
+                image = image.copy()
                 if len(sys.argv) > 1:
                     label = sys.argv[1]
                     capture(image, label)
                 else:
-                    process(image, model)
-                    pass
+                    guess = process(image, model, driver)
+                    if guess != 0:
+                        cv2.rectangle(frame, tuple(rect[0:2]), tuple(rect[0:2] + rect[2:4]), (0, 255, 0), thickness=2)
 
         # don't show if you don't need it.
         cv2.imshow('Gesture', frame)

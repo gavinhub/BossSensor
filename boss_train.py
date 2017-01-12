@@ -155,14 +155,14 @@ class Model(object):
         print('Model Loaded.')
 
     def predict(self, image):
+        image = image.astype('float32')
         if image.shape != (1, 3, IMAGE_SIZE, IMAGE_SIZE):
             image = resize_with_pad(image)
             image = image.reshape((1, 3, IMAGE_SIZE, IMAGE_SIZE))
-        image = image.astype('float32')
         image /= 255
         # result = self.model.predict_proba(image)
         # print(result)
-        result = self.model.predict_classes(image)
+        result = self.model.predict_classes(image, verbose=0)
 
         return result[0]
 

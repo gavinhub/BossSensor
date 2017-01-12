@@ -8,7 +8,6 @@ IMAGE_SIZE = 64
 
 
 def resize_with_pad(image, height=IMAGE_SIZE, width=IMAGE_SIZE):
-
     def get_padding_size(image):
         h, w, _ = image.shape
         longest_edge = max(h, w)
@@ -27,7 +26,7 @@ def resize_with_pad(image, height=IMAGE_SIZE, width=IMAGE_SIZE):
 
     top, bottom, left, right = get_padding_size(image)
     BLACK = [0, 0, 0]
-    constant = cv2.copyMakeBorder(image, top , bottom, left, right, cv2.BORDER_CONSTANT, value=BLACK)
+    constant = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT, value=BLACK)
 
     resized_image = cv2.resize(constant, (height, width))
 
@@ -36,13 +35,15 @@ def resize_with_pad(image, height=IMAGE_SIZE, width=IMAGE_SIZE):
 
 images = []
 labels = []
+
+
 def traverse_dir(path):
     for file_or_dir in os.listdir(path):
         abs_path = os.path.abspath(os.path.join(path, file_or_dir))
         print(abs_path)
         if os.path.isdir(abs_path):  # dir
             traverse_dir(abs_path)
-        else:                        # file
+        else:  # file
             if file_or_dir.endswith('.png'):
                 image = read_image(abs_path)
                 images.append(image)
@@ -60,7 +61,7 @@ def read_image(file_path):
 
 def extract_data(path):
     images, labels = traverse_dir(path)
-    images = np.array(images)
+    images = np.array(images).astype("float32")
     labels = np.array([0 if label.endswith('normal') else 1 for label in labels])
 
     return images, labels
