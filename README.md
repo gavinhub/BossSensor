@@ -4,7 +4,8 @@ Start a FaceTime session when you blow a kiss!
 Put images into [data/normal]() and [data/kiss]().
 
 ## Usage
-First, capture the training data. Use `normal` or `kiss` to denote the label
+First, capture the training data. Use `normal` or `kiss` to denote the label. I captured ~1,000 photos (500 for kiss and normal each) 
+and achieved 90% prediction correctness. So you may also need that more.
 
 ```
 $ python camera_reader.py <label>
